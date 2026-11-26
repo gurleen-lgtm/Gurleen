@@ -1,0 +1,2106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chilbert's Office Live Board — No Problem Movers</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Fredoka (Cartoon Display) & Plus Jakarta Sans (Clean Legibility) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            display: ['"Fredoka"', 'sans-serif'],
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              navy: '#0A192F',
+              navyLight: '#112240',
+              navyCard: '#172A46',
+              cyan: '#00B4D8',
+              cyanDark: '#0096C7',
+              cyanLight: '#90E0EF',
+              red: '#E63946',
+              redDark: '#C1121F',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* ==========================================================================
+       CUSTOM STYLES & MASCOT ANIMATIONS (STRICTLY ZERO AUDIO)
+       ========================================================================== */
+    :root {
+      --navy: #0A192F;
+      --navy-card: #112240;
+      --cyan: #00B4D8;
+      --red: #E63946;
+    }
+
+    body {
+      background-color: #0A192F;
+      color: #F8FAFC;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* Subtle Superhero Tech Grid Background */
+    .tv-bg-pattern {
+      background-color: #0A192F;
+      background-image:
+        radial-gradient(circle at 12% 18%, rgba(0, 180, 216, 0.14) 0%, transparent 38%),
+        radial-gradient(circle at 88% 82%, rgba(230, 57, 70, 0.12) 0%, transparent 40%),
+        linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 36px 36px, 36px 36px;
+    }
+
+    /* Custom Scrollbars for TV Schedule Lists */
+    .tv-scroll::-webkit-scrollbar {
+      width: 6px;
+    }
+    .tv-scroll::-webkit-scrollbar-track {
+      background: rgba(10, 25, 47, 0.5);
+      border-radius: 9999px;
+    }
+    .tv-scroll::-webkit-scrollbar-thumb {
+      background: rgba(0, 180, 216, 0.45);
+      border-radius: 9999px;
+    }
+    .tv-scroll::-webkit-scrollbar-thumb:hover {
+      background: rgba(0, 180, 216, 0.8);
+    }
+
+    /* ==========================================================================
+       CHILBERT MASCOT CSS ANIMATION STATES
+       Works cleanly on BOTH default SVG and user's uploaded PNG/JPG without altering art
+       ========================================================================== */
+    .mascot-stage {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .mascot-walker {
+      position: relative;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      will-change: transform;
+    }
+
+    .mascot-figure {
+      position: relative;
+      transform-origin: bottom center;
+      will-change: transform, filter;
+    }
+
+    /* Cape wind shimmer / heroic aura behind mascot */
+    .cape-aura {
+      position: absolute;
+      inset: 12% 14% 18% 14%;
+      background: radial-gradient(circle, rgba(230, 57, 70, 0.42) 0%, rgba(0, 180, 216, 0.15) 60%, transparent 75%);
+      border-radius: 50%;
+      z-index: 0;
+      animation: capeFlutter 2.8s ease-in-out infinite alternate;
+      pointer-events: none;
+    }
+
+    @keyframes capeFlutter {
+      0% { transform: scaleX(0.95) skewX(-3deg) translateY(2px); opacity: 0.7; }
+      50% { transform: scaleX(1.08) skewX(4deg) translateY(-2px); opacity: 0.95; }
+      100% { transform: scaleX(0.98) skewX(-2deg) translateY(1px); opacity: 0.8; }
+    }
+
+    /* Subtle eye-glint / blink shimmer overlay positioned over Chilbert's eyes */
+    .mascot-eye-glint {
+      position: absolute;
+      top: 15%;
+      left: 44%;
+      width: 14%;
+      height: 5%;
+      border-radius: 9999px;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.85) 0%, rgba(144, 224, 239, 0) 75%);
+      pointer-events: none;
+      z-index: 15;
+      animation: mascotEyeSparkle 4.8s ease-in-out infinite;
+    }
+    @keyframes mascotEyeSparkle {
+      0%, 88%, 100% { opacity: 0; transform: scale(0.7); }
+      92% { opacity: 0.95; transform: scale(1.15); }
+      96% { opacity: 0.2; transform: scale(0.9); }
+    }
+
+    /* STATE 3: WALKING (Patrols across the entire bottom TV runway!) */
+    .state-walking .mascot-walker {
+      animation: chilbertPatrol 12s ease-in-out infinite alternate;
+    }
+    .state-walking .mascot-figure {
+      animation: chilbertStep 0.55s ease-in-out infinite alternate;
+    }
+    @keyframes chilbertPatrol {
+      0% { transform: translateX(0px); }
+      100% { transform: translateX(calc(min(68vw, 960px))); }
+    }
+    @keyframes chilbertStep {
+      0% { transform: translateY(0px) rotate(-4deg); }
+      100% { transform: translateY(-10px) rotate(4deg); }
+    }
+
+    /* STATE 4: POINTING (Gestures upward toward the JOBS cards) */
+    .state-pointing .mascot-figure {
+      animation: chilbertPointing 1.8s ease-in-out infinite;
+    }
+    @keyframes chilbertPointing {
+      0%, 100% { transform: translateY(0px) rotate(4deg) scale(1.03); }
+      50% { transform: translateY(-10px) rotate(9deg) scale(1.07); }
+    }
+
+    /* Sequential 1-by-1 Pop-In Animation for Job Cards 1, 2, 3, 4 */
+    @keyframes jobCardReveal {
+      0% {
+        opacity: 0;
+        transform: translateY(28px) scale(0.92);
+      }
+      70% {
+        opacity: 1;
+        transform: translateY(-4px) scale(1.01);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+    .job-card-reveal {
+      opacity: 0;
+      animation: jobCardReveal 0.55s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
+    /* STATE 5: CELEBRATING (High superhero victory bounce!) */
+    .state-celebrating .mascot-figure {
+      animation: chilbertCelebrate 0.65s cubic-bezier(0.28, 0.84, 0.42, 1) infinite;
+    }
+    @keyframes chilbertCelebrate {
+      0%, 100% { transform: translateY(0) scale(1, 1) rotate(0deg); }
+      30% { transform: translateY(-22px) scale(0.95, 1.07) rotate(-6deg); }
+      60% { transform: translateY(-18px) scale(1.04, 0.98) rotate(6deg); }
+    }
+
+    /* STATE 6: SLEEPING (Cozy low-energy snooze sway) */
+    .state-sleeping .mascot-figure {
+      animation: chilbertSleep 4s ease-in-out infinite;
+      filter: brightness(0.9);
+    }
+    @keyframes chilbertSleep {
+      0%, 100% { transform: translateY(4px) rotate(-3deg) scaleY(0.96); }
+      50% { transform: translateY(7px) rotate(-1deg) scaleY(0.93); }
+    }
+
+    /* Floating Zzz animation when sleeping */
+    .zzz-particle {
+      position: absolute;
+      font-family: 'Fredoka', sans-serif;
+      font-weight: 700;
+      color: #90E0EF;
+      opacity: 0;
+      pointer-events: none;
+      animation: floatZzz 3s ease-in infinite;
+    }
+    .zzz-particle:nth-child(2) { animation-delay: 1s; }
+    .zzz-particle:nth-child(3) { animation-delay: 2s; }
+
+    @keyframes floatZzz {
+      0% { transform: translate(0, 0) scale(0.6); opacity: 0; }
+      30% { opacity: 1; }
+      100% { transform: translate(24px, -44px) scale(1.25); opacity: 0; }
+    }
+
+    /* Visual-only Confetti Particle Burst */
+    .confetti-piece {
+      position: absolute;
+      width: 9px;
+      height: 9px;
+      border-radius: 2px;
+      pointer-events: none;
+      animation: confettiDrop 2.4s ease-out forwards;
+    }
+    @keyframes confettiDrop {
+      0% { transform: translate(0, 0) rotate(0deg) scale(1); opacity: 1; }
+      100% { transform: translate(var(--dx), var(--dy)) rotate(540deg) scale(0.4); opacity: 0; }
+    }
+
+    /* Next Job Glow Highlight */
+    .next-job-glow {
+      box-shadow: 0 0 0 2px #00B4D8, 0 10px 28px -4px rgba(0, 180, 216, 0.35);
+      animation: nextPulseBorder 2.6s ease-in-out infinite;
+    }
+    @keyframes nextPulseBorder {
+      0%, 100% { box-shadow: 0 0 0 2px #00B4D8, 0 8px 24px -4px rgba(0, 180, 216, 0.3); }
+      50% { box-shadow: 0 0 0 3px #90E0EF, 0 12px 32px -2px rgba(0, 180, 216, 0.55); }
+    }
+
+    /* TV Mode Overrides: Hide all admin/control chrome */
+    body.tv-display-mode .non-tv-only {
+      display: none !important;
+    }
+    body.tv-display-mode #tv-exit-pill {
+      display: flex;
+    }
+    body.tv-display-mode.idle-cursor #tv-exit-pill {
+      opacity: 0;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body class="tv-bg-pattern min-h-screen flex flex-col selection:bg-brand-cyan selection:text-brand-navy">
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+  <!-- Floating Exit Pill (Visible only when hovering mouse in TV Fullscreen Mode) -->
+  <button id="tv-exit-pill" onclick="exitTVMode()" class="hidden fixed top-4 right-4 z-50 items-center gap-2 px-4 py-2 rounded-full bg-brand-navyLight/95 border-2 border-brand-cyan text-white font-extrabold text-sm shadow-2xl cursor-pointer transition-opacity">
+    ✕ Exit TV Mode
+  </button>
+
+  <!-- ========================================================================
+       TOP BAR: DATE TOP-LEFT (AS SKETCHED) + COMPACT CLOCK/CONTROLS TOP-RIGHT
+       ======================================================================== -->
+  <header class="px-6 lg:px-10 pt-5 pb-2 z-30">
+    <div class="max-w-[1840px] mx-auto flex flex-wrap items-center justify-between gap-4">
+
+      <!-- TOP-LEFT: DATE BOX (Matches Sketch Top-Left Box) -->
+      <div class="flex items-center gap-3 bg-brand-navyLight/95 border-2 border-brand-cyan/60 rounded-2xl px-5 py-3 shadow-lg">
+        <div class="w-11 h-11 rounded-xl bg-brand-cyan flex flex-col items-center justify-center text-brand-navy font-display font-bold leading-none flex-shrink-0">
+          <span class="text-lg">NP</span>
+          <span class="text-[8px] font-extrabold tracking-wider bg-brand-red text-white px-1 rounded">MOVERS</span>
+        </div>
+        <div>
+          <div id="live-day" class="text-xs font-extrabold uppercase tracking-widest text-brand-cyan">THURSDAY</div>
+          <div id="live-date" class="font-display font-bold text-xl lg:text-2xl text-white leading-tight">November 26, 2026</div>
+        </div>
+        <div class="h-8 w-px bg-white/15 mx-1 hidden sm:block"></div>
+        <div id="live-clock" class="hidden sm:block font-display font-bold text-xl lg:text-2xl text-brand-cyanLight tabular-nums">
+          12:00:00 PM
+        </div>
+      </div>
+
+      <!-- TOP-CENTER: BIG "JOBS" TITLE + TODAY / TOMORROW TOGGLE (Matches Sketch) -->
+      <div class="flex items-center gap-4">
+        <h1 class="font-display font-bold text-4xl sm:text-5xl lg:text-6xl tracking-wider text-white drop-shadow-[0_4px_16px_rgba(0,180,216,0.35)]">
+          JOBS
+        </h1>
+        <div class="flex items-center bg-brand-navyLight border-2 border-white/15 rounded-2xl p-1.5 shadow-lg">
+          <button id="btn-day-today" onclick="setBoardDay('today')" class="px-4 py-2 rounded-xl font-extrabold text-sm lg:text-base bg-brand-cyan text-brand-navy transition cursor-pointer">
+            TODAY (<span id="kpi-today-count">0</span>)
+          </button>
+          <button id="btn-day-tomorrow" onclick="setBoardDay('tomorrow')" class="px-4 py-2 rounded-xl font-extrabold text-sm lg:text-base text-slate-300 hover:text-white transition cursor-pointer">
+            TOMORROW (<span id="kpi-tomorrow-count">0</span>)
+          </button>
+        </div>
+      </div>
+
+      <!-- TOP-RIGHT: WEATHER + COMPACT STATUS + MODE BUTTONS -->
+      <div class="flex items-center gap-3">
+        <!-- Compact Weather Pill -->
+        <div id="weather-widget" class="hidden md:flex items-center gap-2.5 bg-brand-navyLight/95 border border-white/15 rounded-2xl px-4 py-2.5">
+          <span id="weather-icon" class="text-2xl">🌤️</span>
+          <div>
+            <div id="weather-temp" class="font-display font-bold text-lg text-white leading-none">--°</div>
+            <div id="weather-desc" class="text-xs font-bold text-brand-cyanLight">Loading</div>
+            <div id="weather-city" class="hidden"></div>
+          </div>
+        </div>
+
+        <!-- Next Job Countdown Pill -->
+        <div class="hidden xl:flex items-center gap-2.5 bg-brand-navyLight/95 border border-brand-cyan/40 rounded-2xl px-4 py-2.5">
+          <span class="text-xs font-extrabold uppercase text-brand-cyan">NEXT:</span>
+          <span id="countdown-timer" class="font-display font-bold text-xl text-white tabular-nums">--:--:--</span>
+          <span id="countdown-details" class="hidden"></span>
+          <span id="countdown-sub" class="hidden"></span>
+        </div>
+
+        <!-- Mode Buttons (Hidden in TV Mode) -->
+        <div class="non-tv-only flex items-center gap-2">
+          <button id="btn-nav-dashboard" onclick="switchView('dashboard')" class="px-4 py-3 rounded-xl font-extrabold text-sm bg-brand-cyan text-brand-navy shadow-md transition cursor-pointer">
+            📺 TV Board
+          </button>
+          <button id="btn-nav-admin" onclick="switchView('admin')" class="px-4 py-3 rounded-xl font-extrabold text-sm bg-brand-navyCard hover:bg-slate-800 text-white border border-white/20 transition cursor-pointer">
+            ⚙️ Edit Jobs
+          </button>
+          <button onclick="enterTVMode()" class="px-4 py-3 rounded-xl font-extrabold text-sm bg-brand-red hover:bg-brand-redDark text-white shadow-md transition cursor-pointer">
+            🖥️ Fullscreen TV
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hidden legacy counters kept for JS compatibility -->
+  <div class="hidden">
+    <span id="today-date-badge"></span>
+    <span id="tomorrow-date-badge"></span>
+    <span id="kpi-today-done"></span>
+    <span id="kpi-crew-count"></span>
+    <span id="kpi-crew-names"></span>
+    <span id="kpi-truck-count"></span>
+    <span id="kpi-truck-names"></span>
+  </div>
+
+  <!-- ========================================================================
+       DELAYED JOB ALERT BANNER
+       ======================================================================== -->
+  <div id="delayed-alert-banner" class="hidden bg-brand-red text-white px-6 py-2.5 border-y-2 border-white/30 shadow-lg my-1">
+    <div class="max-w-[1840px] mx-auto flex items-center justify-center gap-3 text-center">
+      <span class="text-xl animate-bounce">🚨</span>
+      <span id="delayed-alert-text" class="font-extrabold tracking-wide text-sm lg:text-lg uppercase">
+        DISPATCH ALERT: JOB DELAYED
+      </span>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       VIEW 1: SKETCH-MATCHED TV DASHBOARD
+       - Top/Center: 2x2 Grid of Job Cards (1, 2, 3, 4) that open 1 by 1
+       - Bottom Runway: Chilbert Mascot on bottom-left walking & gesturing across
+       ======================================================================== -->
+  <main id="view-dashboard" class="flex-1 max-w-[1840px] w-full mx-auto px-6 lg:px-10 py-3 flex flex-col justify-between gap-4">
+
+    <!-- CENTER 2x2 JOBS STAGE (CARDS 1, 2, 3, 4 OPENING 1 BY 1) -->
+    <section class="flex-1 flex flex-col justify-center">
+      <div class="flex items-center justify-between mb-3">
+        <div class="flex items-center gap-3">
+          <span id="board-day-label" class="px-3.5 py-1 rounded-full bg-brand-cyan/20 border border-brand-cyan/50 text-brand-cyanLight font-extrabold text-sm uppercase tracking-wider">
+            TODAY'S SCHEDULE
+          </span>
+          <button onclick="replayCardReveal()" class="non-tv-only px-3 py-1 rounded-xl bg-white/10 hover:bg-brand-cyan hover:text-brand-navy text-xs font-extrabold text-slate-200 transition cursor-pointer">
+            ▶ Replay 1-by-1
+          </button>
+          <button onclick="openQuickAdd(currentBoardDay)" class="non-tv-only px-3 py-1 rounded-xl bg-brand-cyan hover:bg-brand-cyanDark text-brand-navy text-xs font-extrabold transition cursor-pointer">
+            + Add Job
+          </button>
+        </div>
+
+        <!-- Pagination controls if more than 4 jobs exist -->
+        <div id="jobs-pagination" class="hidden flex items-center gap-2">
+          <button onclick="changeJobPage(-1)" class="px-3 py-1.5 rounded-xl bg-brand-navyLight border border-white/20 hover:border-brand-cyan text-white font-extrabold text-sm cursor-pointer">
+            ◀ Prev
+          </button>
+          <span id="jobs-page-indicator" class="text-sm font-extrabold text-brand-cyanLight px-2">
+            Page 1 / 1
+          </span>
+          <button onclick="changeJobPage(1)" class="px-3 py-1.5 rounded-xl bg-brand-navyLight border border-white/20 hover:border-brand-cyan text-white font-extrabold text-sm cursor-pointer">
+            Next ▶
+          </button>
+        </div>
+      </div>
+
+      <!-- 2x2 GRID OF JOB CARDS (1, 2 on top row; 3, 4 on second row) -->
+      <div id="jobs-stage-grid" class="grid grid-cols-1 md:grid-cols-2 gap-5 lg:gap-6 max-w-[1520px] w-full mx-auto">
+        <!-- Rendered 1-by-1 dynamically via JS -->
+      </div>
+    </section>
+
+    <!-- BOTTOM MASCOT RUNWAY (CHILBERT ON BOTTOM-LEFT + WALKING LINE ACROSS) -->
+    <section class="relative pt-2 pb-1">
+      <div class="max-w-[1680px] mx-auto relative flex items-end min-h-[205px] lg:min-h-[225px]">
+
+        <!-- Confetti & Zzz Layers -->
+        <div id="confetti-layer" class="absolute inset-0 pointer-events-none z-30"></div>
+        <div id="zzz-layer" class="hidden absolute top-2 left-44 z-30 pointer-events-none">
+          <span class="zzz-particle text-2xl">Z</span>
+          <span class="zzz-particle text-3xl">z</span>
+          <span class="zzz-particle text-xl">z</span>
+        </div>
+
+        <!-- Walking Mascot + Speech Bubble Group -->
+        <div id="mascot-stage" class="mascot-stage state-walking w-full overflow-visible flex items-end">
+          <div class="mascot-walker flex items-end gap-4">
+
+            <!-- Chilbert Figure -->
+            <div class="mascot-figure relative flex items-center justify-center flex-shrink-0">
+              <div class="cape-aura"></div>
+              <div class="mascot-eye-glint"></div>
+
+              <!-- Built-In Chilbert SVG -->
+              <div id="chilbert-default-svg" class="relative z-10 flex items-center justify-center">
+                <svg viewBox="0 0 360 390" class="w-auto h-[185px] lg:h-[215px] drop-shadow-[0_12px_20px_rgba(0,0,0,0.65)] select-none" xmlns="http://www.w3.org/2000/svg" aria-label="Chilbert - No Problem Movers Mascot">
+                  <g stroke="#FFFFFF" stroke-width="14" stroke-linejoin="round" stroke-linecap="round">
+                    <path d="M122 125 L75 260 L118 272 L135 245 L225 245 L242 272 L285 260 L238 125 Z" fill="#FFFFFF"/>
+                    <ellipse cx="180" cy="185" rx="76" ry="72" fill="#FFFFFF"/>
+                    <circle cx="180" cy="84" r="46" fill="#FFFFFF"/>
+                    <circle cx="145" cy="48" r="14" fill="#FFFFFF"/>
+                    <circle cx="215" cy="48" r="14" fill="#FFFFFF"/>
+                    <path d="M112 142 C82 142, 62 124, 62 96 L84 92 C88 112, 102 118, 122 118 Z" fill="#FFFFFF"/>
+                    <path d="M248 142 C276 148, 286 175, 266 196 L248 184 C258 172, 254 162, 238 160 Z" fill="#FFFFFF"/>
+                    <rect x="134" y="242" width="38" height="92" rx="16" fill="#FFFFFF"/>
+                    <rect x="188" y="242" width="38" height="92" rx="16" fill="#FFFFFF"/>
+                  </g>
+                  <path d="M124 126 L76 258 L116 270 L136 242 L224 242 L244 270 L284 258 L236 126 Z" fill="#E63946" stroke="#1E1B4B" stroke-width="4" stroke-linejoin="round"/>
+                  <path d="M126 132 L92 252 L114 258 L138 228 Z" fill="#FF6B35" opacity="0.7"/>
+                  <path d="M234 132 L268 252 L246 258 L222 228 Z" fill="#FF6B35" opacity="0.7"/>
+                  <rect x="136" y="242" width="36" height="58" rx="12" fill="#A5F3FC" stroke="#1E1B4B" stroke-width="4"/>
+                  <rect x="188" y="242" width="36" height="58" rx="12" fill="#A5F3FC" stroke="#1E1B4B" stroke-width="4"/>
+                  <path d="M134 286 L174 286 L174 334 L120 334 C114 334, 114 318, 134 314 Z" fill="#0096C7" stroke="#1E1B4B" stroke-width="4" stroke-linejoin="round"/>
+                  <path d="M122 326 L172 326" stroke="#90E0EF" stroke-width="4" stroke-linecap="round"/>
+                  <path d="M186 286 L226 286 L240 314 C260 318, 260 334, 254 334 L186 334 Z" fill="#0096C7" stroke="#1E1B4B" stroke-width="4" stroke-linejoin="round"/>
+                  <path d="M188 326 L252 326" stroke="#90E0EF" stroke-width="4" stroke-linecap="round"/>
+                  <path d="M114 136 C114 114, 246 114, 246 136 L236 232 C236 248, 124 248, 124 232 Z" fill="#CFFAFE" stroke="#1E1B4B" stroke-width="4"/>
+                  <path d="M124 148 C142 172, 168 176, 180 168 C192 176, 218 172, 236 148" fill="none" stroke="#38BDF8" stroke-width="3.5" stroke-linecap="round"/>
+                  <path d="M156 184 Q180 190 204 184 M158 198 Q180 203 202 198" fill="none" stroke="#38BDF8" stroke-width="3" stroke-linecap="round"/>
+                  <path d="M126 218 L234 218 L226 248 L180 262 L134 248 Z" fill="#E63946" stroke="#1E1B4B" stroke-width="4" stroke-linejoin="round"/>
+                  <rect x="125" y="210" width="110" height="14" rx="4" fill="#B45309" stroke="#1E1B4B" stroke-width="3.5"/>
+                  <rect x="169" y="207" width="22" height="20" rx="4" fill="#FACC15" stroke="#1E1B4B" stroke-width="3.5"/>
+                  <path d="M118 134 C90 134, 72 118, 70 94 L94 90 C96 106, 108 112, 126 112" fill="#CFFAFE" stroke="#1E1B4B" stroke-width="4" stroke-linecap="round"/>
+                  <rect x="64" y="72" width="32" height="36" rx="12" fill="#E63946" stroke="#1E1B4B" stroke-width="4"/>
+                  <path d="M84 74 L84 56 C84 50, 94 50, 94 58 L94 76 Z" fill="#E63946" stroke="#1E1B4B" stroke-width="4"/>
+                  <path d="M242 134 C272 142, 282 170, 262 192 L242 180 C252 168, 248 158, 234 156" fill="#CFFAFE" stroke="#1E1B4B" stroke-width="4" stroke-linecap="round"/>
+                  <circle cx="248" cy="186" r="16" fill="#E63946" stroke="#1E1B4B" stroke-width="4"/>
+                  <path d="M132 118 Q180 142 228 118 L220 132 Q180 152 140 132 Z" fill="#E63946" stroke="#1E1B4B" stroke-width="3.5"/>
+                  <polygon points="150,144 180,136 210,144 205,174 180,186 155,174" fill="#1D4ED8" stroke="#F59E0B" stroke-width="4" stroke-linejoin="round"/>
+                  <text x="180" y="168" text-anchor="middle" font-family="'Fredoka', sans-serif" font-weight="700" font-size="24" fill="#FFFFFF" stroke="#1E1B4B" stroke-width="1">NP</text>
+                  <circle cx="145" cy="48" r="13" fill="#CFFAFE" stroke="#1E1B4B" stroke-width="4"/>
+                  <circle cx="145" cy="48" r="6" fill="#38BDF8"/>
+                  <circle cx="215" cy="48" r="13" fill="#CFFAFE" stroke="#1E1B4B" stroke-width="4"/>
+                  <circle cx="215" cy="48" r="6" fill="#38BDF8"/>
+                  <circle cx="180" cy="84" r="44" fill="#CFFAFE" stroke="#1E1B4B" stroke-width="4"/>
+                  <path d="M168 42 L176 28 L184 39 L194 30 L192 43" fill="#CFFAFE" stroke="#1E1B4B" stroke-width="3.5" stroke-linejoin="round"/>
+                  <path d="M153 64 Q162 58 170 63" fill="none" stroke="#1E1B4B" stroke-width="3.5" stroke-linecap="round"/>
+                  <path d="M190 63 Q198 58 207 64" fill="none" stroke="#1E1B4B" stroke-width="3.5" stroke-linecap="round"/>
+                  <circle cx="163" cy="74" r="6.5" fill="#1E1B4B"/>
+                  <circle cx="165" cy="72" r="2.2" fill="#FFFFFF"/>
+                  <circle cx="197" cy="74" r="6.5" fill="#1E1B4B"/>
+                  <circle cx="199" cy="72" r="2.2" fill="#FFFFFF"/>
+                  <ellipse cx="176" cy="96" rx="24" ry="18" fill="#ECFEFF" stroke="#38BDF8" stroke-width="2.5"/>
+                  <ellipse cx="172" cy="86" rx="9" ry="6" fill="#1E3A8A"/>
+                  <ellipse cx="170" cy="84.5" rx="3" ry="1.5" fill="#93C5FD"/>
+                  <path d="M158 98 Q176 114 195 97 Q177 104 158 98 Z" fill="#FFFFFF" stroke="#1E1B4B" stroke-width="3" stroke-linejoin="round"/>
+                </svg>
+              </div>
+
+              <!-- Custom Uploaded Chilbert Image -->
+              <img
+                id="chilbert-mascot-img"
+                src=""
+                alt="Chilbert - No Problem Movers Mascot"
+                class="hidden relative z-10 max-h-[205px] w-auto object-contain select-none drop-shadow-[0_12px_18px_rgba(0,0,0,0.65)]"
+              />
+            </div>
+
+            <!-- Speech Bubble Beside Chilbert as He Walks & Gestures -->
+            <div onclick="nextChilbertQuote()" class="mb-14 bg-white text-brand-navy rounded-2xl px-5 py-3.5 shadow-2xl border-4 border-brand-cyan cursor-pointer max-w-[320px] relative">
+              <div id="chilbert-speech-title" class="font-display font-bold text-base lg:text-lg text-brand-red leading-tight">
+                HI THERE, TEAM! 👋
+              </div>
+              <p id="chilbert-speech-text" class="font-extrabold text-sm lg:text-base text-brand-navy mt-0.5 leading-snug">
+                Here is the next schedule!
+              </p>
+              <div class="w-3.5 h-3.5 bg-white border-l-4 border-b-4 border-brand-cyan transform rotate-45 absolute top-1/2 -left-2 -translate-y-1/2"></div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Quick Mascot Gesture/Walk Controls on Bottom-Right (Hidden in TV Mode) -->
+        <div class="non-tv-only absolute bottom-3 right-0 z-20 flex items-center gap-1.5 bg-brand-navyLight/95 p-2 rounded-2xl border border-white/15 shadow-xl">
+          <button onclick="setMascotState('walking')" class="mascot-btn px-3 py-1.5 rounded-xl text-xs font-extrabold bg-brand-cyan text-brand-navy border border-brand-cyan transition cursor-pointer" data-state="walking">🚶 Walk</button>
+          <button onclick="setMascotState('pointing')" class="mascot-btn px-3 py-1.5 rounded-xl text-xs font-extrabold bg-brand-navy text-white border border-white/10 transition cursor-pointer" data-state="pointing">👉 Gesture</button>
+          <button onclick="setMascotState('greeting')" class="mascot-btn px-3 py-1.5 rounded-xl text-xs font-extrabold bg-brand-navy text-white border border-white/10 transition cursor-pointer" data-state="greeting">👋 Wave</button>
+          <button onclick="setMascotState('celebrating')" class="mascot-btn px-3 py-1.5 rounded-xl text-xs font-extrabold bg-brand-navy text-white border border-white/10 transition cursor-pointer" data-state="celebrating">🎉 Cheer</button>
+          <button onclick="setMascotState('idle')" class="mascot-btn px-3 py-1.5 rounded-xl text-xs font-extrabold bg-brand-navy text-white border border-white/10 transition cursor-pointer" data-state="idle">😌 Idle</button>
+          <span id="mascot-state-badge" class="hidden"></span>
+        </div>
+      </div>
+
+      <!-- The Floor Line Across the Bottom (Matches Sketch Line) -->
+      <div class="max-w-[1680px] mx-auto h-1.5 rounded-full bg-gradient-to-r from-brand-cyan via-white/60 to-brand-red shadow-[0_0_14px_rgba(0,180,216,0.5)]"></div>
+    </section>
+  </main>
+
+  <!-- ========================================================================
+       VIEW 2: OFFICE STAFF ADMIN MODE (EASY JOB ENTRY, EDITING & MASCOT UPLOAD)
+       ======================================================================== -->
+  <main id="view-admin" class="hidden flex-1 max-w-[1600px] w-full mx-auto px-4 lg:px-8 py-6 space-y-6">
+
+    <!-- Admin Top Banner -->
+    <div class="bg-gradient-to-r from-brand-navyLight to-brand-navyCard border-2 border-brand-cyan/40 rounded-3xl p-5 flex flex-wrap items-center justify-between gap-4 shadow-xl">
+      <div>
+        <span class="px-3 py-1 rounded-full bg-brand-cyan/20 text-brand-cyan text-xs font-extrabold uppercase tracking-wider">Office Staff Control Panel</span>
+        <h2 class="font-display font-bold text-2xl lg:text-3xl text-white mt-1">Manage Moving Jobs & Chilbert Mascot</h2>
+        <p class="text-sm text-slate-300 mt-0.5">Changes save automatically and update the Live Office TV Board immediately.</p>
+      </div>
+      <div class="flex flex-wrap items-center gap-3">
+        <button onclick="resetToSampleJobs()" class="px-4 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-sm border border-white/15 transition cursor-pointer">
+          🔄 Load Sample Jobs
+        </button>
+        <button onclick="switchView('dashboard')" class="px-5 py-3 rounded-xl bg-brand-cyan hover:bg-brand-cyanDark text-brand-navy font-extrabold text-sm shadow-lg shadow-brand-cyan/25 transition cursor-pointer">
+          📺 Back to Live TV Board
+        </button>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 xl:grid-cols-12 gap-6">
+
+      <!-- LEFT 5 COLS: SIMPLE ADD / EDIT JOB FORM -->
+      <div class="xl:col-span-5 bg-brand-navyLight border border-white/15 rounded-3xl p-6 shadow-xl h-fit">
+        <div class="flex items-center justify-between mb-4 pb-3 border-b border-white/10">
+          <h3 id="form-heading" class="font-display font-bold text-xl lg:text-2xl text-white flex items-center gap-2">
+            <span>➕ Add New Moving Job</span>
+          </h3>
+          <button id="btn-cancel-edit" onclick="resetJobForm()" class="hidden px-3 py-1.5 rounded-lg bg-brand-red/20 text-red-300 hover:bg-brand-red hover:text-white text-xs font-bold transition cursor-pointer">
+            Cancel Edit
+          </button>
+        </div>
+
+        <form id="job-form" onsubmit="handleSaveJob(event)" class="space-y-4">
+          <input type="hidden" id="job-id" value="" />
+
+          <!-- Date + Quick Today/Tomorrow Buttons -->
+          <div>
+            <label class="block text-sm font-bold text-slate-200 mb-1.5">1. Moving Date *</label>
+            <div class="flex gap-2">
+              <input type="date" id="job-date" required class="flex-1 bg-brand-navy border-2 border-white/15 focus:border-brand-cyan rounded-xl px-4 py-3 text-white font-bold text-base outline-none" />
+              <button type="button" onclick="setFormDateOffset(0)" class="px-3.5 py-3 rounded-xl bg-brand-cyan/20 hover:bg-brand-cyan hover:text-brand-navy text-brand-cyan font-extrabold text-sm border border-brand-cyan/40 transition cursor-pointer">
+                Today
+              </button>
+              <button type="button" onclick="setFormDateOffset(1)" class="px-3.5 py-3 rounded-xl bg-white/10 hover:bg-white/20 text-white font-extrabold text-sm border border-white/15 transition cursor-pointer">
+                Tomorrow
+              </button>
+            </div>
+          </div>
+
+          <!-- Start Time & Job Type -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-sm font-bold text-slate-200 mb-1.5">2. Start Time *</label>
+              <input type="time" id="job-time" required value="08:30" class="w-full bg-brand-navy border-2 border-white/15 focus:border-brand-cyan rounded-xl px-4 py-3 text-white font-bold text-base outline-none" />
+            </div>
+            <div>
+              <label class="block text-sm font-bold text-slate-200 mb-1.5">3. Job Type *</label>
+              <select id="job-type" class="w-full bg-brand-navy border-2 border-white/15 focus:border-brand-cyan rounded-xl px-3.5 py-3 text-white font-bold text-base outline-none">
+                <option value="Residential Move">🏠 Residential Move</option>
+                <option value="Commercial Move">🏢 Commercial Move</option>
+                <option value="Packing Service">📦 Packing Service</option>
+                <option value="Storage Run">🔐 Storage Run</option>
+                <option value="Heavy / Specialty Item">🎹 Heavy / Specialty Item</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Customer / Job Name -->
+          <div>
+            <label class="block text-sm font-bold text-slate-200 mb-1.5">4. Customer or Job Name *</label>
+            <input type="text" id="job-customer" required placeholder="e.g., Sarah Jenkins — 3BR Home" class="w-full bg-brand-navy border-2 border-white/15 focus:border-brand-cyan rounded-xl px-4 py-3 text-white font-semibold text-base placeholder-slate-500 outline-none" />
+          </div>
+
+          <!-- Pickup & Destination -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-sm font-bold text-slate-200 mb-1.5">5. Pickup Location *</label>
+              <input type="text" id="job-pickup" required placeholder="e.g., 142 Lakeshore Rd W" class="w-full bg-brand-navy border-2 border-white/15 focus:border-brand-cyan rounded-xl px-4 py-3 text-white font-semibold text-sm placeholder-slate-500 outline-none" />
+            </div>
+            <div>
+              <label class="block text-sm font-bold text-slate-200 mb-1.5">6. Destination *</label>
+              <input type="text" id="job-destination" required placeholder="e.g., 88 Hurontario St, Unit 4" class="w-full bg-brand-navy border-2 border-white/15 focus:border-brand-cyan rounded-xl px-4 py-3 text-white font-semibold text-sm placeholder-slate-500 outline-none" />
+            </div>
+          </div>
+
+          <!-- Assigned Crew + One-Click Crew Chips -->
+          <div>
+            <label class="block text-sm font-bold text-slate-200 mb-1.5">7. Assigned Crew</label>
+            <input type="text" id="job-crew" placeholder="e.g., Mike, Devon, Carlos" class="w-full bg-brand-navy border-2 border-white/15 focus:border-brand-cyan rounded-xl px-4 py-3 text-white font-semibold text-base placeholder-slate-500 outline-none" />
+            <div class="flex flex-wrap gap-1.5 mt-2">
+              <span class="text-xs text-slate-400 font-semibold self-center mr-1">Quick add:</span>
+              <button type="button" onclick="appendCrewMember('Mike')" class="px-2.5 py-1 rounded-lg bg-brand-navy hover:bg-brand-cyan hover:text-brand-navy text-xs font-bold border border-white/15 transition cursor-pointer">+ Mike</button>
+              <button type="button" onclick="appendCrewMember('Devon')" class="px-2.5 py-1 rounded-lg bg-brand-navy hover:bg-brand-cyan hover:text-brand-navy text-xs font-bold border border-white/15 transition cursor-pointer">+ Devon</button>
+              <button type="button" onclick="appendCrewMember('Carlos')" class="px-2.5 py-1 rounded-lg bg-brand-navy hover:bg-brand-cyan hover:text-brand-navy text-xs font-bold border border-white/15 transition cursor-pointer">+ Carlos</button>
+              <button type="button" onclick="appendCrewMember('Sarah')" class="px-2.5 py-1 rounded-lg bg-brand-navy hover:bg-brand-cyan hover:text-brand-navy text-xs font-bold border border-white/15 transition cursor-pointer">+ Sarah</button>
+              <button type="button" onclick="appendCrewMember('Jamal')" class="px-2.5 py-1 rounded-lg bg-brand-navy hover:bg-brand-cyan hover:text-brand-navy text-xs font-bold border border-white/15 transition cursor-pointer">+ Jamal</button>
+            </div>
+          </div>
+
+          <!-- Assigned Truck & Status -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-sm font-bold text-slate-200 mb-1.5">8. Assigned Truck</label>
+              <select id="job-truck" class="w-full bg-brand-navy border-2 border-white/15 focus:border-brand-cyan rounded-xl px-3.5 py-3 text-white font-bold text-sm outline-none">
+                <option value="Unassigned">Unassigned</option>
+                <option value="Truck 1 (26ft Box)">🚚 Truck 1 (26ft Box)</option>
+                <option value="Truck 2 (20ft Box)">🚚 Truck 2 (20ft Box)</option>
+                <option value="Truck 3 (26ft Air-Ride)">🚚 Truck 3 (26ft Air-Ride)</option>
+                <option value="Van 4 (Sprinter)">🚐 Van 4 (Sprinter)</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-bold text-slate-200 mb-1.5">9. Current Status</label>
+              <select id="job-status" class="w-full bg-brand-navy border-2 border-white/15 focus:border-brand-cyan rounded-xl px-3.5 py-3 text-white font-bold text-sm outline-none">
+                <option value="Booked">Booked</option>
+                <option value="Crew Assigned">Crew Assigned</option>
+                <option value="Ready">Ready</option>
+                <option value="En Route">En Route</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Completed">Completed</option>
+                <option value="Delayed">Delayed</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Notes -->
+          <div>
+            <label class="block text-sm font-bold text-slate-200 mb-1.5">10. Dispatch Notes (Optional)</label>
+            <textarea id="job-notes" rows="2" placeholder="e.g., Freight elevator booked 9am–12pm. Bring wardrobe boxes." class="w-full bg-brand-navy border-2 border-white/15 focus:border-brand-cyan rounded-xl px-4 py-2.5 text-white font-medium text-sm placeholder-slate-500 outline-none"></textarea>
+          </div>
+
+          <!-- Big Submit Button -->
+          <button type="submit" id="btn-submit-job" class="w-full py-4 rounded-2xl bg-gradient-to-r from-brand-cyan to-brand-cyanDark hover:brightness-110 text-brand-navy font-display font-bold text-xl tracking-wide shadow-lg shadow-brand-cyan/30 transition cursor-pointer">
+            💾 SAVE JOB TO LIVE BOARD
+          </button>
+        </form>
+      </div>
+
+      <!-- RIGHT 7 COLS: JOB LIST MANAGEMENT + MASCOT UPLOAD + SYNC SETTINGS -->
+      <div class="xl:col-span-7 space-y-6">
+
+        <!-- Existing Jobs Management Card -->
+        <div class="bg-brand-navyLight border border-white/15 rounded-3xl p-6 shadow-xl">
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-4 pb-3 border-b border-white/10">
+            <h3 class="font-display font-bold text-xl lg:text-2xl text-white">📋 All Scheduled Jobs</h3>
+            <div class="flex items-center gap-1.5 bg-brand-navy p-1 rounded-xl border border-white/10">
+              <button type="button" id="filter-all" onclick="setAdminFilter('all')" class="admin-filter-btn px-3 py-1.5 rounded-lg bg-brand-cyan text-brand-navy text-xs font-extrabold transition cursor-pointer">All</button>
+              <button type="button" id="filter-today" onclick="setAdminFilter('today')" class="admin-filter-btn px-3 py-1.5 rounded-lg text-slate-300 hover:text-white text-xs font-bold transition cursor-pointer">Today</button>
+              <button type="button" id="filter-tomorrow" onclick="setAdminFilter('tomorrow')" class="admin-filter-btn px-3 py-1.5 rounded-lg text-slate-300 hover:text-white text-xs font-bold transition cursor-pointer">Tomorrow</button>
+            </div>
+          </div>
+
+          <div id="admin-jobs-list" class="space-y-3 max-h-[420px] overflow-y-auto tv-scroll pr-1">
+            <!-- Rendered dynamically via JS -->
+          </div>
+        </div>
+
+        <!-- Bottom Grid: Mascot Image Uploader + Cloud/Sync Settings -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+          <!-- Mascot Image Uploader & Cutout Mode -->
+          <div class="bg-brand-navyLight border-2 border-brand-cyan/40 rounded-3xl p-5 shadow-xl flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between gap-2">
+                <span class="px-2.5 py-0.5 rounded-md bg-brand-red text-white text-[11px] font-extrabold uppercase">Official Mascot</span>
+                <span id="mascot-source-badge" class="text-[11px] font-bold text-brand-cyanLight">Official Chilbert Loaded</span>
+              </div>
+              <h4 class="font-display font-bold text-xl text-white mt-1.5">Chilbert Mascot Display</h4>
+              <p class="text-xs text-slate-300 mt-1 leading-relaxed">
+                Your official Chilbert artwork is embedded directly as the default mascot with his white sticker outline, red cape, red gloves, blue boots, and NP emblem intact.
+              </p>
+            </div>
+
+            <!-- Background Cutout Toggle -->
+            <div class="mt-3 bg-brand-navy p-2.5 rounded-2xl border border-white/10">
+              <div class="text-[11px] font-extrabold uppercase tracking-wider text-slate-400 mb-1.5">Background Mode</div>
+              <div class="grid grid-cols-2 gap-1.5">
+                <button type="button" id="btn-cutout-auto" onclick="setMascotCutoutMode('cutout')" class="py-2 px-2.5 rounded-xl bg-brand-cyan text-brand-navy font-extrabold text-xs transition cursor-pointer">
+                  ✨ Auto-Cutout (Transparent)
+                </button>
+                <button type="button" id="btn-cutout-original" onclick="setMascotCutoutMode('original')" class="py-2 px-2.5 rounded-xl bg-brand-navyCard text-slate-300 hover:text-white font-bold text-xs border border-white/10 transition cursor-pointer">
+                  🖼️ Original Image
+                </button>
+              </div>
+            </div>
+
+            <div class="my-3 flex items-center gap-4 bg-brand-navy p-3 rounded-2xl border border-white/10">
+              <div class="w-16 h-16 rounded-xl bg-brand-navyCard flex items-center justify-center overflow-hidden border border-brand-cyan/30 flex-shrink-0 p-1">
+                <span id="admin-mascot-fallback-icon" class="text-3xl">🐻‍❄️</span>
+                <img id="admin-mascot-preview" src="" alt="Chilbert Preview" class="hidden max-h-14 w-auto object-contain" />
+              </div>
+              <div class="space-y-2 flex-1">
+                <input type="file" id="mascot-upload-input" accept="image/*" onchange="handleMascotImageUpload(event)" class="hidden" />
+                <button type="button" onclick="document.getElementById('mascot-upload-input').click()" class="w-full py-2 px-3 rounded-xl bg-brand-cyan hover:bg-brand-cyanDark text-brand-navy font-extrabold text-xs transition cursor-pointer">
+                  📁 Upload Your Chilbert Image
+                </button>
+                <button type="button" onclick="resetMascotImage()" class="w-full py-1.5 px-3 rounded-xl bg-white/5 hover:bg-brand-red hover:text-white text-slate-300 font-bold text-xs transition cursor-pointer">
+                  ↺ Reset to Built-In Mascot
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Weather City & Shared Data / Cloud Sync Architecture -->
+          <div class="bg-brand-navyLight border border-white/15 rounded-3xl p-5 shadow-xl flex flex-col justify-between">
+            <div>
+              <span class="px-2.5 py-0.5 rounded-md bg-emerald-500/20 text-emerald-300 text-[11px] font-extrabold uppercase">Office Settings & Sync</span>
+              <h4 class="font-display font-bold text-xl text-white mt-1.5">Weather & Data Backup</h4>
+
+              <!-- Weather Location Input -->
+              <div class="mt-3">
+                <label class="block text-xs font-bold text-slate-300 mb-1">Office City (for Live Weather)</label>
+                <div class="flex gap-2">
+                  <input type="text" id="settings-city" placeholder="e.g., Mississauga, ON" class="flex-1 bg-brand-navy border border-white/15 rounded-xl px-3 py-2 text-xs text-white font-bold outline-none" />
+                  <button type="button" onclick="updateWeatherCity()" class="px-3 py-2 rounded-xl bg-brand-cyan text-brand-navy font-extrabold text-xs cursor-pointer">
+                    Update
+                  </button>
+                </div>
+              </div>
+
+              <!-- Optional External Webhook / JSON Backup -->
+              <div class="mt-3">
+                <label class="block text-xs font-bold text-slate-300 mb-1">Optional Google Apps Script / Firebase REST URL</label>
+                <div class="flex gap-2">
+                  <input type="url" id="settings-sync-url" placeholder="https://... (Optional)" class="flex-1 bg-brand-navy border border-white/15 rounded-xl px-3 py-2 text-xs text-white outline-none" />
+                  <button type="button" onclick="saveSyncEndpoint()" class="px-3 py-2 rounded-xl bg-white/15 hover:bg-white/25 text-white font-bold text-xs cursor-pointer">
+                    Save
+                  </button>
+                </div>
+                <p id="sync-status-label" class="text-[11px] text-slate-400 mt-1">
+                  Currently using local browser storage + live multi-tab sync.
+                </p>
+              </div>
+            </div>
+
+            <div class="flex gap-2 mt-4 pt-3 border-t border-white/10">
+              <button type="button" onclick="exportScheduleJSON()" class="flex-1 py-2 px-3 rounded-xl bg-brand-navy hover:bg-slate-800 border border-white/15 text-xs font-bold text-brand-cyanLight cursor-pointer">
+                ⬇️ Export JSON
+              </button>
+              <label class="flex-1 py-2 px-3 rounded-xl bg-brand-navy hover:bg-slate-800 border border-white/15 text-xs font-bold text-white text-center cursor-pointer">
+                ⬆️ Import JSON
+                <input type="file" accept=".json" onchange="importScheduleJSON(event)" class="hidden" />
+              </label>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ========================================================================
+       APPLICATION LOGIC (DATA LAYER, CLOCK, WEATHER, MASCOT ENGINE, RENDERERS)
+       ======================================================================== -->
+  <script>
+    /* ========================================================================
+       1. STORAGE KEYS & MODULAR DATA ADAPTER
+       ======================================================================== */
+    const STORAGE_KEYS = {
+      JOBS: 'npm_chilbert_jobs_v1',
+      MASCOT: 'npm_chilbert_mascot_v1',
+      MASCOT_CUTOUT: 'npm_chilbert_mascot_cutout_v1',
+      CITY: 'npm_chilbert_city_v1',
+      SYNC_URL: 'npm_chilbert_sync_url_v1'
+    };
+
+    // Official Embedded Chilbert Mascot Filename (Optional local file; falls back cleanly to built-in SVG)
+    const OFFICIAL_CHILBERT_IMAGE_SRC = '';
+
+    // Helper: Get YYYY-MM-DD in local timezone
+    function getLocalDateISO(offsetDays = 0) {
+      const d = new Date();
+      d.setDate(d.getDate() + offsetDays);
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    }
+
+    // Helper: Format YYYY-MM-DD into readable badge (e.g., "Thu, Nov 26")
+    function formatReadableDate(isoStr) {
+      if (!isoStr) return '';
+      const [y, m, d] = isoStr.split('-').map(Number);
+      const dateObj = new Date(y, m - 1, d);
+      return dateObj.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+    }
+
+    // Helper: Format 24h "HH:MM" into "8:30 AM"
+    function formatTime12h(time24) {
+      if (!time24) return 'TBD';
+      const [hStr, mStr] = time24.split(':');
+      let h = parseInt(hStr, 10);
+      const ampm = h >= 12 ? 'PM' : 'AM';
+      h = h % 12 || 12;
+      return `${h}:${mStr} ${ampm}`;
+    }
+
+    // All 7 Required Job Statuses & Styling Tokens
+    const STATUS_CONFIG = {
+      'Booked': {
+        badge: 'bg-sky-500/20 text-sky-300 border-sky-400/40',
+        border: 'border-sky-500/30',
+        dot: 'bg-sky-400'
+      },
+      'Crew Assigned': {
+        badge: 'bg-indigo-500/20 text-indigo-300 border-indigo-400/40',
+        border: 'border-indigo-500/35',
+        dot: 'bg-indigo-400'
+      },
+      'Ready': {
+        badge: 'bg-teal-500/20 text-teal-300 border-teal-400/40',
+        border: 'border-teal-500/35',
+        dot: 'bg-teal-400'
+      },
+      'En Route': {
+        badge: 'bg-amber-500/25 text-amber-300 border-amber-400/50',
+        border: 'border-amber-500/45',
+        dot: 'bg-amber-400 animate-ping'
+      },
+      'In Progress': {
+        badge: 'bg-brand-cyan/25 text-brand-cyanLight border-brand-cyan',
+        border: 'border-brand-cyan/60',
+        dot: 'bg-brand-cyan animate-ping'
+      },
+      'Completed': {
+        badge: 'bg-emerald-500/25 text-emerald-300 border-emerald-400/50',
+        border: 'border-emerald-500/40',
+        dot: 'bg-emerald-400'
+      },
+      'Delayed': {
+        badge: 'bg-brand-red/30 text-red-200 border-brand-red animate-pulse',
+        border: 'border-brand-red',
+        dot: 'bg-brand-red animate-ping'
+      }
+    };
+
+    const STATUS_ORDER = [
+      'Booked',
+      'Crew Assigned',
+      'Ready',
+      'En Route',
+      'In Progress',
+      'Completed',
+      'Delayed'
+    ];
+
+    // Modular Storage Manager (supports localStorage + cross-tab sync + optional external endpoint)
+    class ScheduleStore {
+      constructor() {
+        this.jobs = this.loadJobs();
+      }
+
+      loadJobs() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEYS.JOBS);
+          if (!raw) {
+            const seeded = this.createSampleJobs();
+            this.saveJobs(seeded, false);
+            return seeded;
+          }
+          const parsed = JSON.parse(raw);
+          return Array.isArray(parsed) ? parsed : [];
+        } catch (err) {
+          console.error('Error loading jobs:', err);
+          return [];
+        }
+      }
+
+      saveJobs(jobsList, pushRemote = true) {
+        this.jobs = jobsList;
+        localStorage.setItem(STORAGE_KEYS.JOBS, JSON.stringify(this.jobs));
+        if (pushRemote) {
+          this.pushToOptionalRemoteEndpoint();
+        }
+      }
+
+      async pushToOptionalRemoteEndpoint() {
+        const url = localStorage.getItem(STORAGE_KEYS.SYNC_URL);
+        if (!url) return;
+        try {
+          await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ updatedAt: new Date().toISOString(), jobs: this.jobs })
+          });
+        } catch (e) {
+          console.warn('Optional remote sync endpoint unreachable:', e);
+        }
+      }
+
+      createSampleJobs() {
+        const today = getLocalDateISO(0);
+        const tomorrow = getLocalDateISO(1);
+        const now = new Date();
+        const nextHour = String(Math.min(22, now.getHours() + 1)).padStart(2, '0') + ':00';
+        const laterHour = String(Math.min(23, now.getHours() + 3)).padStart(2, '0') + ':30';
+
+        return [
+          {
+            id: 'job_' + Date.now() + '_1',
+            date: today,
+            startTime: '08:00',
+            jobType: 'Residential Move',
+            customer: 'Thompson Family — 4BR House',
+            pickup: '214 Meadowvale Blvd, Mississauga',
+            destination: '890 Lakeshore Rd E, Oakville',
+            crew: 'Mike, Devon, Carlos',
+            truck: 'Truck 1 (26ft Box)',
+            status: 'Completed',
+            notes: 'Piano & patio set wrapped. All items delivered safely.'
+          },
+          {
+            id: 'job_' + Date.now() + '_2',
+            date: today,
+            startTime: '11:30',
+            jobType: 'Commercial Move',
+            customer: 'Apex Dental Studio',
+            pickup: '4500 Dixie Rd, Suite 200',
+            destination: '1200 Eglinton Ave W, Suite 410',
+            crew: 'Sarah, Jamal',
+            truck: 'Truck 2 (20ft Box)',
+            status: 'In Progress',
+            notes: 'Loading medical cabinets via rear loading dock.'
+          },
+          {
+            id: 'job_' + Date.now() + '_3',
+            date: today,
+            startTime: nextHour,
+            jobType: 'Residential Move',
+            customer: 'Elena Rostova — Condo Move',
+            pickup: '33 Burnhamthorpe Rd W, Unit 1804',
+            destination: '77 Harbour Square, Toronto',
+            crew: 'Mike, Carlos',
+            truck: 'Truck 3 (26ft Air-Ride)',
+            status: 'Ready',
+            notes: 'Service elevator reserved for 2 hours.'
+          },
+          {
+            id: 'job_' + Date.now() + '_4',
+            date: today,
+            startTime: laterHour,
+            jobType: 'Packing Service',
+            customer: 'Marcus Vance — Full Home Pack',
+            pickup: '512 Winston Churchill Blvd',
+            destination: '512 Winston Churchill Blvd (Prep)',
+            crew: 'Sarah, Devon',
+            truck: 'Van 4 (Sprinter)',
+            status: 'Crew Assigned',
+            notes: 'Bring 40 medium boxes, dish packs, and bubble wrap.'
+          },
+          {
+            id: 'job_' + Date.now() + '_5',
+            date: tomorrow,
+            startTime: '08:30',
+            jobType: 'Residential Move',
+            customer: 'David & Priya Patel',
+            pickup: '19 Creditview Rd, Brampton',
+            destination: '404 Derry Rd W, Milton',
+            crew: 'Mike, Devon, Jamal',
+            truck: 'Truck 1 (26ft Box)',
+            status: 'Crew Assigned',
+            notes: 'Two-stop pickup: stop at Public Storage #14 on way.'
+          },
+          {
+            id: 'job_' + Date.now() + '_6',
+            date: tomorrow,
+            startTime: '13:00',
+            jobType: 'Heavy / Specialty Item',
+            customer: 'Royal Conservatory — Baby Grand',
+            pickup: '273 Bloor St W, Toronto',
+            destination: '1550 Hurontario St, Mississauga',
+            crew: 'Carlos, Jamal',
+            truck: 'Truck 3 (26ft Air-Ride)',
+            status: 'Booked',
+            notes: 'Requires piano board, heavy blankets, and liftgate.'
+          }
+        ];
+      }
+    }
+
+    const store = new ScheduleStore();
+
+    /* ========================================================================
+       2. CHILBERT MASCOT STATE, SPEECH BUBBLES & VISUAL CELEBRATION ENGINE
+       (STRICTLY ZERO AUDIO / NO VOICE / NO SOUND EFFECTS)
+       ======================================================================== */
+    let currentMascotState = 'walking';
+    let currentQuoteIndex = 0;
+
+    const CHILBERT_QUOTES = [
+      { title: "HI THERE, TEAM! 👋", text: "Here is the next schedule!" },
+      { title: "GOOD MORNING, TEAM! ☀️", text: "Let's make today a great one!" },
+      { title: "READY FOR ACTION! 💪", text: "Who's ready to move?" },
+      { title: "NO PROBLEM! ⭐", text: "Another job completed! Great work!" },
+      { title: "PLANNING AHEAD! 🗓️", text: "Check out tomorrow's schedule!" },
+      { title: "SUPERHERO STRENGTH! 🐻‍❄️", text: "Stay cool. Let us do the heavy lifting!" }
+    ];
+
+    function setMascotState(state, customSpeech = null) {
+      currentMascotState = state;
+      const stage = document.getElementById('mascot-stage');
+      const badge = document.getElementById('mascot-state-badge');
+      const zzzLayer = document.getElementById('zzz-layer');
+
+      if (!stage) return;
+
+      // Apply CSS animation class
+      stage.classList.remove(
+        'state-idle',
+        'state-greeting',
+        'state-walking',
+        'state-pointing',
+        'state-celebrating',
+        'state-sleeping'
+      );
+      stage.classList.add(`state-${state}`);
+
+      if (badge) {
+        badge.textContent = `State: ${state.charAt(0).toUpperCase() + state.slice(1)}`;
+      }
+
+      // Toggle floating Zzz visual particles when sleeping
+      if (zzzLayer) {
+        if (state === 'sleeping') {
+          zzzLayer.classList.remove('hidden');
+        } else {
+          zzzLayer.classList.add('hidden');
+        }
+      }
+
+      // Update active state button highlight
+      document.querySelectorAll('.mascot-btn').forEach(btn => {
+        if (btn.dataset.state === state) {
+          btn.classList.add('bg-brand-cyan', 'text-brand-navy', 'border-brand-cyan');
+          btn.classList.remove('bg-brand-navy', 'text-white', 'border-white/10');
+        } else {
+          btn.classList.remove('bg-brand-cyan', 'text-brand-navy', 'border-brand-cyan');
+          btn.classList.add('bg-brand-navy', 'text-white', 'border-white/10');
+        }
+      });
+
+      if (customSpeech) {
+        updateChilbertSpeech(customSpeech.title, customSpeech.text);
+      }
+    }
+
+    function updateChilbertSpeech(title, text) {
+      const titleEl = document.getElementById('chilbert-speech-title');
+      const textEl = document.getElementById('chilbert-speech-text');
+      if (titleEl) titleEl.textContent = title;
+      if (textEl) textEl.textContent = text;
+    }
+
+    function nextChilbertQuote() {
+      currentQuoteIndex = (currentQuoteIndex + 1) % CHILBERT_QUOTES.length;
+      const q = CHILBERT_QUOTES[currentQuoteIndex];
+      updateChilbertSpeech(q.title, q.text);
+    }
+
+    function triggerChilbertCelebration(customerName = '') {
+      setMascotState('celebrating', {
+        title: "JOB COMPLETED! 🎉",
+        text: customerName
+          ? `Awesome job finishing ${customerName}! Way to go, team!`
+          : "Another job completed! Great work!"
+      });
+
+      // Spawn visual-only confetti pieces inside Mascot Stage
+      const confettiLayer = document.getElementById('confetti-layer');
+      if (confettiLayer) {
+        const colors = ['#00B4D8', '#E63946', '#FFFFFF', '#FACC15', '#34D399'];
+        for (let i = 0; i < 28; i++) {
+          const piece = document.createElement('div');
+          piece.className = 'confetti-piece';
+          piece.style.left = `${40 + Math.random() * 20}%`;
+          piece.style.top = `${35 + Math.random() * 15}%`;
+          piece.style.backgroundColor = colors[i % colors.length];
+          piece.style.setProperty('--dx', `${(Math.random() - 0.5) * 240}px`);
+          piece.style.setProperty('--dy', `${(Math.random() - 0.7) * 200}px`);
+          confettiLayer.appendChild(piece);
+          setTimeout(() => piece.remove(), 2500);
+        }
+      }
+
+      // Return to walking patrol after 6.5 seconds
+      setTimeout(() => {
+        if (currentMascotState === 'celebrating') {
+          setMascotState('walking', CHILBERT_QUOTES[0]);
+        }
+      }, 6500);
+    }
+
+    /* ========================================================================
+       3. OFFICIAL CHILBERT MASCOT RENDERER, AUTO-CUTOUT & REPLACEMENT UPLOADER
+       ======================================================================== */
+    let mascotCutoutMode = localStorage.getItem(STORAGE_KEYS.MASCOT_CUTOUT) || 'cutout';
+    const cutoutCache = new Map();
+
+    // Flood-fills outer black background (#000000) from image corners with smooth
+    // anti-aliased edge feathering so Chilbert's white sticker border & artwork stay 100% crisp.
+    function createTransparentStickerDataURL(imageSrc) {
+      if (cutoutCache.has(imageSrc)) {
+        return Promise.resolve(cutoutCache.get(imageSrc));
+      }
+
+      return new Promise((resolve) => {
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.onload = function () {
+          try {
+            const w = img.naturalWidth || img.width;
+            const h = img.naturalHeight || img.height;
+            const canvas = document.createElement('canvas');
+            canvas.width = w;
+            canvas.height = h;
+            const ctx = canvas.getContext('2d', { willReadFrequently: true });
+            ctx.drawImage(img, 0, 0, w, h);
+
+            const imgData = ctx.getImageData(0, 0, w, h);
+            const data = imgData.data;
+            const totalPixels = w * h;
+
+            // Sample top-left corner color to verify dark background
+            const bgR = data[0];
+            const bgG = data[1];
+            const bgB = data[2];
+            const isDarkCorner = (bgR + bgG + bgB) < 90;
+
+            if (!isDarkCorner) {
+              // Image already has light/transparent background; return unmodified
+              cutoutCache.set(imageSrc, imageSrc);
+              resolve(imageSrc);
+              return;
+            }
+
+            const visited = new Uint8Array(totalPixels);
+            const queue = new Int32Array(totalPixels);
+            let head = 0;
+            let tail = 0;
+
+            const isNearBlack = (idx) => {
+              const p = idx * 4;
+              const r = data[p];
+              const g = data[p + 1];
+              const b = data[p + 2];
+              // Keep dark outlines inside the mascot safe while removing outer black backdrop
+              return r < 34 && g < 34 && b < 34;
+            };
+
+            const seedPixel = (x, y) => {
+              if (x < 0 || x >= w || y < 0 || y >= h) return;
+              const idx = y * w + x;
+              if (!visited[idx] && isNearBlack(idx)) {
+                visited[idx] = 1;
+                queue[tail++] = idx;
+              }
+            };
+
+            // Seed along all 4 outer image borders
+            for (let x = 0; x < w; x++) {
+              seedPixel(x, 0);
+              seedPixel(x, h - 1);
+            }
+            for (let y = 0; y < h; y++) {
+              seedPixel(0, y);
+              seedPixel(w - 1, y);
+            }
+
+            // BFS flood-fill outer black background only (never touches interior dark lines)
+            while (head < tail) {
+              const curr = queue[head++];
+              const cx = curr % w;
+              const cy = (curr - cx) / w;
+
+              if (cx > 0) seedPixel(cx - 1, cy);
+              if (cx + 1 < w) seedPixel(cx + 1, cy);
+              if (cy > 0) seedPixel(cx, cy - 1);
+              if (cy + 1 < h) seedPixel(cx, cy + 1);
+            }
+
+            // Apply transparency to flooded outer pixels + 1px anti-aliased edge feathering
+            for (let i = 0; i < totalPixels; i++) {
+              if (visited[i]) {
+                data[i * 4 + 3] = 0;
+              } else {
+                const x = i % w;
+                const y = (i - x) / w;
+                const touchesBg =
+                  (x > 0 && visited[i - 1]) ||
+                  (x + 1 < w && visited[i + 1]) ||
+                  (y > 0 && visited[i - w]) ||
+                  (y + 1 < h && visited[i + w]);
+
+                if (touchesBg) {
+                  const p = i * 4;
+                  const lum = (data[p] + data[p + 1] + data[p + 2]) / 3;
+                  if (lum < 110) {
+                    data[p + 3] = Math.min(255, Math.round((lum / 110) * 255));
+                  }
+                }
+              }
+            }
+
+            ctx.putImageData(imgData, 0, 0);
+            const resultURL = canvas.toDataURL('image/png');
+            cutoutCache.set(imageSrc, resultURL);
+            resolve(resultURL);
+          } catch (err) {
+            // Fallback cleanly to unmodified source if canvas is tainted
+            resolve(imageSrc);
+          }
+        };
+        img.onerror = function () {
+          resolve(imageSrc);
+        };
+        img.src = imageSrc;
+      });
+    }
+
+    function updateCutoutToggleUI() {
+      const btnAuto = document.getElementById('btn-cutout-auto');
+      const btnOrig = document.getElementById('btn-cutout-original');
+      if (!btnAuto || !btnOrig) return;
+
+      if (mascotCutoutMode === 'cutout') {
+        btnAuto.className = 'py-2 px-2.5 rounded-xl bg-brand-cyan text-brand-navy font-extrabold text-xs transition cursor-pointer';
+        btnOrig.className = 'py-2 px-2.5 rounded-xl bg-brand-navyCard text-slate-300 hover:text-white font-bold text-xs border border-white/10 transition cursor-pointer';
+      } else {
+        btnOrig.className = 'py-2 px-2.5 rounded-xl bg-brand-cyan text-brand-navy font-extrabold text-xs transition cursor-pointer';
+        btnAuto.className = 'py-2 px-2.5 rounded-xl bg-brand-navyCard text-slate-300 hover:text-white font-bold text-xs border border-white/10 transition cursor-pointer';
+      }
+    }
+
+    function setMascotCutoutMode(mode) {
+      mascotCutoutMode = mode;
+      localStorage.setItem(STORAGE_KEYS.MASCOT_CUTOUT, mode);
+      updateCutoutToggleUI();
+      applyStoredMascotImage();
+      showToast(
+        mode === 'cutout'
+          ? 'Mascot Auto-Cutout (Transparent Background) enabled!'
+          : 'Displaying Original Mascot Image',
+        'info'
+      );
+    }
+
+    async function applyStoredMascotImage() {
+      const customSaved = localStorage.getItem(STORAGE_KEYS.MASCOT);
+      const rawSource = customSaved || OFFICIAL_CHILBERT_IMAGE_SRC;
+
+      const defaultSvgEl = document.getElementById('chilbert-default-svg');
+      const mascotImgEl = document.getElementById('chilbert-mascot-img');
+      const adminPreview = document.getElementById('admin-mascot-preview');
+      const adminFallbackIcon = document.getElementById('admin-mascot-fallback-icon');
+      const sourceBadge = document.getElementById('mascot-source-badge');
+
+      updateCutoutToggleUI();
+
+      if (!rawSource) {
+        if (defaultSvgEl) defaultSvgEl.classList.remove('hidden');
+        if (mascotImgEl) {
+          mascotImgEl.classList.add('hidden');
+          mascotImgEl.removeAttribute('src');
+        }
+        if (adminPreview) {
+          adminPreview.classList.add('hidden');
+          adminPreview.removeAttribute('src');
+        }
+        if (adminFallbackIcon) adminFallbackIcon.classList.remove('hidden');
+        if (sourceBadge) sourceBadge.textContent = 'Built-In Chilbert Active';
+        return;
+      }
+
+      if (sourceBadge) {
+        sourceBadge.textContent = 'Uploaded Chilbert Active';
+      }
+
+      const finalDisplaySrc =
+        mascotCutoutMode === 'cutout'
+          ? await createTransparentStickerDataURL(rawSource)
+          : rawSource;
+
+      if (mascotImgEl) {
+        mascotImgEl.onerror = () => {
+          mascotImgEl.classList.add('hidden');
+          if (defaultSvgEl) defaultSvgEl.classList.remove('hidden');
+        };
+        mascotImgEl.src = finalDisplaySrc;
+        mascotImgEl.classList.remove('hidden');
+      }
+      if (defaultSvgEl) defaultSvgEl.classList.add('hidden');
+
+      if (adminPreview) {
+        adminPreview.src = finalDisplaySrc;
+        adminPreview.classList.remove('hidden');
+      }
+      if (adminFallbackIcon) adminFallbackIcon.classList.add('hidden');
+    }
+
+    function handleMascotImageUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          localStorage.setItem(STORAGE_KEYS.MASCOT, e.target.result);
+          applyStoredMascotImage();
+          showToast('Replacement Chilbert mascot image saved!', 'success');
+        } catch (err) {
+          showToast('Image too large for browser storage. Please use a compressed PNG/JPG under 3MB.', 'error');
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function resetMascotImage() {
+      localStorage.removeItem(STORAGE_KEYS.MASCOT);
+      applyStoredMascotImage();
+      showToast('Restored official Chilbert mascot image!', 'info');
+    }
+
+    /* ========================================================================
+       4. LIVE CLOCK, DATE & WEATHER WIDGET
+       ======================================================================== */
+    function updateClockAndDate() {
+      const now = new Date();
+      document.getElementById('live-clock').textContent = now.toLocaleTimeString('en-US', {
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: true
+      });
+
+      document.getElementById('live-day').textContent = now.toLocaleDateString('en-US', { weekday: 'long' }).toUpperCase();
+      document.getElementById('live-date').textContent = now.toLocaleDateString('en-US', {
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric'
+      });
+
+      document.getElementById('today-date-badge').textContent = formatReadableDate(getLocalDateISO(0));
+      document.getElementById('tomorrow-date-badge').textContent = formatReadableDate(getLocalDateISO(1));
+    }
+
+    async function fetchLiveWeather() {
+      const savedCity = localStorage.getItem(STORAGE_KEYS.CITY) || 'Mississauga, ON';
+      document.getElementById('weather-city').textContent = savedCity;
+      document.getElementById('settings-city').value = savedCity;
+
+      // Default coordinates (Mississauga / GTA) with Open-Meteo geocoding lookup
+      let lat = 43.5890;
+      let lon = -79.6441;
+
+      try {
+        const cityQuery = encodeURIComponent(savedCity.split(',')[0].trim());
+        const geoRes = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${cityQuery}&count=1&language=en&format=json`);
+        if (geoRes.ok) {
+          const geoData = await geoRes.json();
+          if (geoData.results && geoData.results.length > 0) {
+            lat = geoData.results[0].latitude;
+            lon = geoData.results[0].longitude;
+          }
+        }
+
+        const wxRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code&temperature_unit=celsius`);
+        if (wxRes.ok) {
+          const wxData = await wxRes.json();
+          const temp = Math.round(wxData.current.temperature_2m);
+          const code = wxData.current.weather_code;
+          const mapped = mapWeatherCode(code);
+          document.getElementById('weather-temp').textContent = `${temp}°C`;
+          document.getElementById('weather-desc').textContent = mapped.label;
+          document.getElementById('weather-icon').textContent = mapped.icon;
+        }
+      } catch (err) {
+        // Graceful fallback if offline
+        document.getElementById('weather-temp').textContent = '12°C';
+        document.getElementById('weather-desc').textContent = 'Clear Moving Weather';
+        document.getElementById('weather-icon').textContent = '🌤️';
+      }
+    }
+
+    function mapWeatherCode(code) {
+      if (code === 0) return { label: 'Clear Sky', icon: '☀️' };
+      if (code <= 3) return { label: 'Partly Cloudy', icon: '⛅' };
+      if (code <= 48) return { label: 'Foggy', icon: '🌫️' };
+      if (code <= 67) return { label: 'Rain Showers', icon: '🌧️' };
+      if (code <= 77) return { label: 'Snow / Flurries', icon: '❄️' };
+      if (code <= 82) return { label: 'Heavy Rain', icon: '⛈️' };
+      return { label: 'Stormy', icon: '🌩️' };
+    }
+
+    function updateWeatherCity() {
+      const val = document.getElementById('settings-city').value.trim();
+      if (!val) return;
+      localStorage.setItem(STORAGE_KEYS.CITY, val);
+      fetchLiveWeather();
+      showToast(`Weather location updated to ${val}`, 'success');
+    }
+
+    /* ========================================================================
+       5. DASHBOARD RENDERING: 1-BY-1 SEQUENTIAL JOB CARDS (1, 2, 3, 4)
+       ======================================================================== */
+    let currentBoardDay = 'today';
+    let currentJobPage = 0;
+    const JOBS_PER_PAGE = 4;
+
+    function setBoardDay(day) {
+      currentBoardDay = day;
+      currentJobPage = 0;
+
+      const btnToday = document.getElementById('btn-day-today');
+      const btnTomorrow = document.getElementById('btn-day-tomorrow');
+      const dayLabel = document.getElementById('board-day-label');
+
+      if (day === 'today') {
+        btnToday.className = 'px-4 py-2 rounded-xl font-extrabold text-sm lg:text-base bg-brand-cyan text-brand-navy transition cursor-pointer';
+        btnTomorrow.className = 'px-4 py-2 rounded-xl font-extrabold text-sm lg:text-base text-slate-300 hover:text-white transition cursor-pointer';
+        dayLabel.textContent = `TODAY'S SCHEDULE • ${formatReadableDate(getLocalDateISO(0))}`;
+      } else {
+        btnTomorrow.className = 'px-4 py-2 rounded-xl font-extrabold text-sm lg:text-base bg-brand-red text-white transition cursor-pointer';
+        btnToday.className = 'px-4 py-2 rounded-xl font-extrabold text-sm lg:text-base text-slate-300 hover:text-white transition cursor-pointer';
+        dayLabel.textContent = `TOMORROW'S SCHEDULE • ${formatReadableDate(getLocalDateISO(1))}`;
+      }
+
+      renderDashboard(true);
+    }
+
+    function changeJobPage(delta) {
+      currentJobPage += delta;
+      renderDashboard(true);
+    }
+
+    function replayCardReveal() {
+      renderDashboard(true);
+    }
+
+    function renderDashboard(animateReveal = false) {
+      const todayISO = getLocalDateISO(0);
+      const tomorrowISO = getLocalDateISO(1);
+
+      const todaysJobs = store.jobs
+        .filter(j => j.date === todayISO)
+        .sort((a, b) => a.startTime.localeCompare(b.startTime));
+
+      const tomorrowsJobs = store.jobs
+        .filter(j => j.date === tomorrowISO)
+        .sort((a, b) => a.startTime.localeCompare(b.startTime));
+
+      // Update Top Day Counts
+      document.getElementById('kpi-today-count').textContent = todaysJobs.length;
+      document.getElementById('kpi-tomorrow-count').textContent = tomorrowsJobs.length;
+
+      // Identify Next Upcoming Job Today
+      const now = new Date();
+      const nowMinutes = now.getHours() * 60 + now.getMinutes();
+
+      let nextUpcomingJob = todaysJobs.find(j => {
+        if (j.status === 'Completed') return false;
+        const [hh, mm] = j.startTime.split(':').map(Number);
+        return (hh * 60 + mm) >= nowMinutes;
+      });
+      if (!nextUpcomingJob) {
+        nextUpcomingJob = todaysJobs.find(j => j.status !== 'Completed') || null;
+      }
+
+      // Active list based on Today / Tomorrow toggle
+      const activeJobs = currentBoardDay === 'today' ? todaysJobs : tomorrowsJobs;
+      const totalPages = Math.max(1, Math.ceil(activeJobs.length / JOBS_PER_PAGE));
+      if (currentJobPage >= totalPages) currentJobPage = totalPages - 1;
+      if (currentJobPage < 0) currentJobPage = 0;
+
+      const paginationEl = document.getElementById('jobs-pagination');
+      if (activeJobs.length > JOBS_PER_PAGE) {
+        paginationEl.classList.remove('hidden');
+        document.getElementById('jobs-page-indicator').textContent = `Page ${currentJobPage + 1} / ${totalPages}`;
+      } else {
+        paginationEl.classList.add('hidden');
+      }
+
+      const startIdx = currentJobPage * JOBS_PER_PAGE;
+      const visibleJobs = activeJobs.slice(startIdx, startIdx + JOBS_PER_PAGE);
+
+      // Render 2x2 Grid Cards (Numbered 1, 2, 3, 4 and opening 1 by 1!)
+      const gridContainer = document.getElementById('jobs-stage-grid');
+      if (visibleJobs.length === 0) {
+        gridContainer.innerHTML = `
+          <div class="md:col-span-2">
+            ${renderEmptyScheduleCard(
+              currentBoardDay === 'today' ? 'No moves scheduled for today!' : "Tomorrow's board is open!",
+              'Chilbert is patrolling the office—click "+ Add Job" anytime to schedule a move.'
+            )}
+          </div>
+        `;
+      } else {
+        gridContainer.innerHTML = visibleJobs
+          .map((job, idx) => {
+            const cardNumber = startIdx + idx + 1;
+            const isNext = currentBoardDay === 'today' && nextUpcomingJob && job.id === nextUpcomingJob.id;
+            const delayMs = idx * 320; // Opens 1 by 1 every 320ms!
+            return renderTVJobCard(job, isNext, cardNumber, animateReveal ? delayMs : 0);
+          })
+          .join('');
+      }
+
+      // Delayed Jobs Alert Banner
+      const delayedJobs = [...todaysJobs, ...tomorrowsJobs].filter(j => j.status === 'Delayed');
+      const alertBanner = document.getElementById('delayed-alert-banner');
+      if (delayedJobs.length > 0) {
+        alertBanner.classList.remove('hidden');
+        const names = delayedJobs.map(j => `${j.customer} (${formatTime12h(j.startTime)})`).join(' | ');
+        document.getElementById('delayed-alert-text').textContent = `DISPATCH ALERT: ${delayedJobs.length} DELAYED JOB(S) — ${names}`;
+      } else {
+        alertBanner.classList.add('hidden');
+      }
+
+      // Store reference for live countdown ticker
+      window.__nextUpcomingJob = nextUpcomingJob;
+      updateLiveCountdown();
+    }
+
+    function updateLiveCountdown() {
+      const job = window.__nextUpcomingJob;
+      const timerEl = document.getElementById('countdown-timer');
+      if (!timerEl) return;
+
+      if (!job) {
+        timerEl.textContent = 'ALL DONE!';
+        return;
+      }
+
+      const now = new Date();
+      const [hh, mm] = job.startTime.split(':').map(Number);
+      const target = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hh, mm, 0);
+      const diffMs = target - now;
+
+      if (diffMs <= 0) {
+        timerEl.textContent = job.status === 'In Progress' ? 'IN PROGRESS' : 'DISPATCH NOW';
+      } else {
+        const totalSec = Math.floor(diffMs / 1000);
+        const hrs = String(Math.floor(totalSec / 3600)).padStart(2, '0');
+        const mins = String(Math.floor((totalSec % 3600) / 60)).padStart(2, '0');
+        const secs = String(totalSec % 60).padStart(2, '0');
+        timerEl.textContent = `${hrs}:${mins}:${secs}`;
+      }
+    }
+
+    function renderTVJobCard(job, isNextUp, cardNumber = 1, revealDelayMs = 0) {
+      const st = STATUS_CONFIG[job.status] || STATUS_CONFIG['Booked'];
+      const isCompleted = job.status === 'Completed';
+
+      return `
+        <article
+          style="animation-delay: ${revealDelayMs}ms;"
+          class="job-card-reveal bg-brand-navyLight/95 border-2 ${isNextUp ? 'next-job-glow border-brand-cyan' : st.border} ${isCompleted ? 'opacity-75' : ''} rounded-3xl p-5 lg:p-6 shadow-2xl flex flex-col justify-between">
+          <div>
+            <!-- Top Row: Job Number Badge + Time + Status -->
+            <div class="flex items-center justify-between gap-2 mb-3">
+              <div class="flex items-center gap-3">
+                <span class="w-10 h-10 rounded-2xl bg-brand-cyan text-brand-navy font-display font-bold text-xl flex items-center justify-center shadow-md flex-shrink-0">
+                  ${cardNumber}
+                </span>
+                <span class="font-display font-bold text-2xl lg:text-3xl text-white">
+                  ${formatTime12h(job.startTime)}
+                </span>
+                ${isNextUp ? `<span class="px-2.5 py-0.5 rounded-full bg-brand-cyan text-brand-navy text-xs font-extrabold uppercase">NEXT</span>` : ''}
+              </div>
+
+              <div class="flex items-center gap-2">
+                <span class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs lg:text-sm font-extrabold border ${st.badge}">
+                  <span class="w-2 h-2 rounded-full ${st.dot}"></span>
+                  ${escapeHTML(job.status)}
+                </span>
+                <button onclick="cycleJobStatus('${job.id}')" title="Cycle Status" class="non-tv-only w-9 h-9 rounded-xl bg-white/10 hover:bg-brand-cyan hover:text-brand-navy text-base font-extrabold flex items-center justify-center transition cursor-pointer">
+                  ↻
+                </button>
+              </div>
+            </div>
+
+            <!-- Customer Name & Job Type -->
+            <div class="mb-3">
+              <div class="text-xs font-extrabold uppercase tracking-wider text-brand-cyanLight mb-0.5">
+                ${escapeHTML(job.jobType)}
+              </div>
+              <h3 class="font-display font-bold text-2xl lg:text-3xl text-white leading-tight">
+                ${escapeHTML(job.customer)}
+              </h3>
+            </div>
+
+            <!-- Pickup & Destination -->
+            <div class="bg-brand-navy rounded-2xl px-4 py-3 border border-white/10 text-sm lg:text-base font-bold text-slate-200 space-y-1">
+              <div class="truncate"><span class="text-brand-cyan font-extrabold mr-2">FROM:</span>${escapeHTML(job.pickup)}</div>
+              <div class="truncate"><span class="text-brand-red font-extrabold mr-2">TO:</span>${escapeHTML(job.destination)}</div>
+            </div>
+          </div>
+
+          <!-- Bottom Row: Crew & Truck -->
+          <div class="flex flex-wrap items-center justify-between gap-2 pt-3 mt-3 border-t border-white/10 text-sm lg:text-base font-extrabold">
+            <div class="text-white">
+              👷 ${escapeHTML(job.crew || 'Unassigned')}
+            </div>
+            <div class="px-3.5 py-1 rounded-xl bg-brand-cyan/15 text-brand-cyanLight border border-brand-cyan/30">
+              🚚 ${escapeHTML(job.truck || 'Unassigned')}
+            </div>
+          </div>
+        </article>
+      `;
+    }
+
+    function renderEmptyScheduleCard(title, subtitle) {
+      return `
+        <div class="h-full min-h-[240px] flex flex-col items-center justify-center text-center p-6 rounded-2xl border-2 border-dashed border-white/15 bg-brand-navy/50">
+          <div class="text-5xl mb-3">🐻‍❄️💤</div>
+          <h4 class="font-display font-bold text-xl text-white">${title}</h4>
+          <p class="text-sm text-slate-400 mt-1 max-w-xs">${subtitle}</p>
+        </div>
+      `;
+    }
+
+    /* ========================================================================
+       6. ADMIN MODE CRUD & STAFF CONTROLS
+       ======================================================================== */
+    let currentAdminFilter = 'all';
+
+    function switchView(viewName) {
+      const dashView = document.getElementById('view-dashboard');
+      const adminView = document.getElementById('view-admin');
+      const btnDash = document.getElementById('btn-nav-dashboard');
+      const btnAdmin = document.getElementById('btn-nav-admin');
+
+      if (viewName === 'admin') {
+        dashView.classList.add('hidden');
+        adminView.classList.remove('hidden');
+
+        btnAdmin.classList.add('bg-brand-cyan', 'text-brand-navy');
+        btnAdmin.classList.remove('bg-brand-navyCard', 'text-white');
+
+        btnDash.classList.remove('bg-brand-cyan', 'text-brand-navy');
+        btnDash.classList.add('bg-brand-navyCard', 'text-white');
+
+        renderAdminJobsList();
+      } else {
+        adminView.classList.add('hidden');
+        dashView.classList.remove('hidden');
+
+        btnDash.classList.add('bg-brand-cyan', 'text-brand-navy');
+        btnDash.classList.remove('bg-brand-navyCard', 'text-white');
+
+        btnAdmin.classList.remove('bg-brand-cyan', 'text-brand-navy');
+        btnAdmin.classList.add('bg-brand-navyCard', 'text-white');
+
+        renderDashboard();
+      }
+    }
+
+    function openQuickAdd(dayType) {
+      switchView('admin');
+      resetJobForm();
+      setFormDateOffset(dayType === 'tomorrow' ? 1 : 0);
+      document.getElementById('job-customer').focus();
+    }
+
+    function setFormDateOffset(offsetDays) {
+      document.getElementById('job-date').value = getLocalDateISO(offsetDays);
+    }
+
+    function appendCrewMember(name) {
+      const input = document.getElementById('job-crew');
+      const current = input.value.split(',').map(s => s.trim()).filter(Boolean);
+      if (!current.includes(name)) {
+        current.push(name);
+        input.value = current.join(', ');
+      }
+    }
+
+    function handleSaveJob(event) {
+      event.preventDefault();
+      const id = document.getElementById('job-id').value;
+      const status = document.getElementById('job-status').value;
+      const customer = document.getElementById('job-customer').value.trim();
+
+      const jobData = {
+        id: id || 'job_' + Date.now(),
+        date: document.getElementById('job-date').value,
+        startTime: document.getElementById('job-time').value,
+        jobType: document.getElementById('job-type').value,
+        customer,
+        pickup: document.getElementById('job-pickup').value.trim(),
+        destination: document.getElementById('job-destination').value.trim(),
+        crew: document.getElementById('job-crew').value.trim(),
+        truck: document.getElementById('job-truck').value,
+        status,
+        notes: document.getElementById('job-notes').value.trim()
+      };
+
+      let updatedList;
+      if (id) {
+        updatedList = store.jobs.map(j => (j.id === id ? jobData : j));
+        showToast(`Updated job: ${customer}`, 'success');
+      } else {
+        updatedList = [...store.jobs, jobData];
+        showToast(`Added job: ${customer}`, 'success');
+      }
+
+      store.saveJobs(updatedList);
+      resetJobForm();
+      renderAdminJobsList();
+      renderDashboard();
+
+      if (status === 'Completed') {
+        triggerChilbertCelebration(customer);
+      }
+    }
+
+    function editJob(jobId) {
+      const job = store.jobs.find(j => j.id === jobId);
+      if (!job) return;
+
+      document.getElementById('job-id').value = job.id;
+      document.getElementById('job-date').value = job.date;
+      document.getElementById('job-time').value = job.startTime;
+      document.getElementById('job-type').value = job.jobType;
+      document.getElementById('job-customer').value = job.customer;
+      document.getElementById('job-pickup').value = job.pickup;
+      document.getElementById('job-destination').value = job.destination;
+      document.getElementById('job-crew').value = job.crew;
+      document.getElementById('job-truck').value = job.truck;
+      document.getElementById('job-status').value = job.status;
+      document.getElementById('job-notes').value = job.notes || '';
+
+      document.getElementById('form-heading').textContent = '✏️ Edit Moving Job';
+      document.getElementById('btn-submit-job').textContent = '✅ UPDATE JOB ON BOARD';
+      document.getElementById('btn-cancel-edit').classList.remove('hidden');
+
+      document.getElementById('job-form').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function resetJobForm() {
+      document.getElementById('job-form').reset();
+      document.getElementById('job-id').value = '';
+      document.getElementById('job-date').value = getLocalDateISO(0);
+      document.getElementById('job-time').value = '09:00';
+      document.getElementById('form-heading').textContent = '➕ Add New Moving Job';
+      document.getElementById('btn-submit-job').textContent = '💾 SAVE JOB TO LIVE BOARD';
+      document.getElementById('btn-cancel-edit').classList.add('hidden');
+    }
+
+    function deleteJob(jobId) {
+      const target = store.jobs.find(j => j.id === jobId);
+      if (!target) return;
+      const updated = store.jobs.filter(j => j.id !== jobId);
+      store.saveJobs(updated);
+      renderAdminJobsList();
+      renderDashboard();
+      showToast(`Deleted job: ${target.customer}`, 'info');
+    }
+
+    function updateJobStatusDirect(jobId, newStatus) {
+      let completedCustomer = '';
+      const updated = store.jobs.map(j => {
+        if (j.id === jobId) {
+          if (newStatus === 'Completed' && j.status !== 'Completed') {
+            completedCustomer = j.customer;
+          }
+          return { ...j, status: newStatus };
+        }
+        return j;
+      });
+      store.saveJobs(updated);
+      renderAdminJobsList();
+      renderDashboard();
+      showToast(`Status changed to ${newStatus}`, 'success');
+
+      if (completedCustomer) {
+        triggerChilbertCelebration(completedCustomer);
+      }
+    }
+
+    function cycleJobStatus(jobId) {
+      const job = store.jobs.find(j => j.id === jobId);
+      if (!job) return;
+      const idx = STATUS_ORDER.indexOf(job.status);
+      const nextStatus = STATUS_ORDER[(idx + 1) % STATUS_ORDER.length];
+      updateJobStatusDirect(jobId, nextStatus);
+    }
+
+    function setAdminFilter(filter) {
+      currentAdminFilter = filter;
+      document.querySelectorAll('.admin-filter-btn').forEach(btn => {
+        btn.classList.remove('bg-brand-cyan', 'text-brand-navy');
+        btn.classList.add('text-slate-300');
+      });
+      const activeBtn = document.getElementById(`filter-${filter}`);
+      activeBtn.classList.add('bg-brand-cyan', 'text-brand-navy');
+      activeBtn.classList.remove('text-slate-300');
+      renderAdminJobsList();
+    }
+
+    function renderAdminJobsList() {
+      const container = document.getElementById('admin-jobs-list');
+      const todayISO = getLocalDateISO(0);
+      const tomorrowISO = getLocalDateISO(1);
+
+      let filtered = [...store.jobs];
+      if (currentAdminFilter === 'today') {
+        filtered = filtered.filter(j => j.date === todayISO);
+      } else if (currentAdminFilter === 'tomorrow') {
+        filtered = filtered.filter(j => j.date === tomorrowISO);
+      }
+
+      filtered.sort((a, b) => (a.date + a.startTime).localeCompare(b.date + b.startTime));
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-10 text-slate-400">
+            <p class="font-bold text-base">No jobs match this filter.</p>
+            <p class="text-xs mt-1">Use the form on the left to add a moving job.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = filtered.map(job => {
+        const dayTag = job.date === todayISO
+          ? '<span class="px-2 py-0.5 rounded bg-brand-cyan/20 text-brand-cyan text-[11px] font-extrabold">TODAY</span>'
+          : job.date === tomorrowISO
+            ? '<span class="px-2 py-0.5 rounded bg-brand-red/20 text-red-300 text-[11px] font-extrabold">TOMORROW</span>'
+            : `<span class="px-2 py-0.5 rounded bg-white/10 text-slate-300 text-[11px] font-bold">${formatReadableDate(job.date)}</span>`;
+
+        return `
+          <div class="bg-brand-navy border border-white/10 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div class="space-y-1">
+              <div class="flex flex-wrap items-center gap-2">
+                ${dayTag}
+                <span class="font-display font-bold text-white text-base">${formatTime12h(job.startTime)}</span>
+                <span class="text-xs font-bold text-brand-cyanLight">• ${escapeHTML(job.jobType)}</span>
+              </div>
+              <div class="font-bold text-white text-base">${escapeHTML(job.customer)}</div>
+              <div class="text-xs text-slate-400">
+                ${escapeHTML(job.pickup)} → ${escapeHTML(job.destination)}
+              </div>
+              <div class="text-xs text-slate-300 font-semibold">
+                👷 ${escapeHTML(job.crew || 'Unassigned')} &nbsp;|&nbsp; 🚚 ${escapeHTML(job.truck || 'Unassigned')}
+              </div>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-2">
+              <select onchange="updateJobStatusDirect('${job.id}', this.value)" class="bg-brand-navyLight border border-white/20 rounded-xl px-2.5 py-2 text-xs font-extrabold text-white outline-none cursor-pointer">
+                ${STATUS_ORDER.map(s => `<option value="${s}" ${job.status === s ? 'selected' : ''}>${s}</option>`).join('')}
+              </select>
+              <button onclick="editJob('${job.id}')" class="px-3.5 py-2 rounded-xl bg-brand-cyan/20 hover:bg-brand-cyan hover:text-brand-navy text-brand-cyan font-extrabold text-xs transition cursor-pointer">
+                ✏️ Edit
+              </button>
+              <button onclick="deleteJob('${job.id}')" class="px-3.5 py-2 rounded-xl bg-brand-red/20 hover:bg-brand-red text-red-300 hover:text-white font-extrabold text-xs transition cursor-pointer">
+                🗑️ Delete
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function resetToSampleJobs() {
+      const seeded = store.createSampleJobs();
+      store.saveJobs(seeded);
+      renderAdminJobsList();
+      renderDashboard();
+      showToast('Sample moving schedule loaded!', 'success');
+    }
+
+    /* ========================================================================
+       7. JSON BACKUP & OPTIONAL CLOUD ENDPOINT SETTINGS
+       ======================================================================== */
+    function saveSyncEndpoint() {
+      const url = document.getElementById('settings-sync-url').value.trim();
+      if (url) {
+        localStorage.setItem(STORAGE_KEYS.SYNC_URL, url);
+        document.getElementById('sync-status-label').textContent = 'External webhook URL saved. Updates will POST automatically.';
+        showToast('External sync URL saved!', 'success');
+      } else {
+        localStorage.removeItem(STORAGE_KEYS.SYNC_URL);
+        document.getElementById('sync-status-label').textContent = 'Using local browser storage + live multi-tab sync.';
+        showToast('External sync URL cleared.', 'info');
+      }
+    }
+
+    function exportScheduleJSON() {
+      const blob = new Blob([JSON.stringify(store.jobs, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `no-problem-movers-schedule-${getLocalDateISO(0)}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast('Schedule JSON exported!', 'success');
+    }
+
+    function importScheduleJSON(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const parsed = JSON.parse(e.target.result);
+          if (!Array.isArray(parsed)) throw new Error('Invalid format');
+          store.saveJobs(parsed);
+          renderAdminJobsList();
+          renderDashboard();
+          showToast(`Imported ${parsed.length} jobs!`, 'success');
+        } catch (err) {
+          showToast('Invalid JSON schedule file.', 'error');
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    /* ========================================================================
+       8. FULLSCREEN TV DISPLAY MODE & SCREEN WAKE LOCK
+       ======================================================================== */
+    let wakeLockSentinel = null;
+    let cursorIdleTimer = null;
+
+    async function requestWakeLock() {
+      try {
+        if ('wakeLock' in navigator) {
+          wakeLockSentinel = await navigator.wakeLock.request('screen');
+        }
+      } catch (err) {
+        console.warn('Wake Lock unavailable:', err);
+      }
+    }
+
+    function enterTVMode() {
+      switchView('dashboard');
+      document.body.classList.add('tv-display-mode');
+
+      // Request browser fullscreen
+      if (document.documentElement.requestFullscreen) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      }
+      requestWakeLock();
+      showToast('TV Display Mode active (Screen Wake Lock engaged)', 'info');
+    }
+
+    function exitTVMode() {
+      document.body.classList.remove('tv-display-mode', 'idle-cursor');
+      if (document.fullscreenElement && document.exitFullscreen) {
+        document.exitFullscreen().catch(() => {});
+      }
+      if (wakeLockSentinel) {
+        wakeLockSentinel.release().catch(() => {});
+        wakeLockSentinel = null;
+      }
+    }
+
+    // Sync state if user presses Esc to leave fullscreen
+    document.addEventListener('fullscreenchange', () => {
+      if (!document.fullscreenElement && document.body.classList.contains('tv-display-mode')) {
+        exitTVMode();
+      }
+    });
+
+    // Re-acquire wake lock if tab becomes visible again in TV Mode
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible' && document.body.classList.contains('tv-display-mode')) {
+        requestWakeLock();
+      }
+    });
+
+    // Auto-hide cursor & exit button after 3.5s of mouse inactivity in TV Mode
+    document.addEventListener('mousemove', () => {
+      if (!document.body.classList.contains('tv-display-mode')) return;
+      document.body.classList.remove('idle-cursor');
+      clearTimeout(cursorIdleTimer);
+      cursorIdleTimer = setTimeout(() => {
+        document.body.classList.add('idle-cursor');
+      }, 3500);
+    });
+
+    /* ========================================================================
+       9. UTILITIES (TOASTS, ESCAPING, MULTI-TAB SYNC)
+       ======================================================================== */
+    function showToast(message, type = 'info') {
+      const container = document.getElementById('toast-container');
+      const el = document.createElement('div');
+      const colors = {
+        success: 'bg-emerald-600 border-emerald-300 text-white',
+        error: 'bg-brand-red border-red-200 text-white',
+        info: 'bg-brand-navyCard border-brand-cyan text-white'
+      };
+      el.className = `px-4 py-3 rounded-2xl border-2 font-bold text-sm shadow-2xl transition-all transform translate-y-0 ${colors[type] || colors.info}`;
+      el.textContent = message;
+      container.appendChild(el);
+      setTimeout(() => {
+        el.style.opacity = '0';
+        setTimeout(() => el.remove(), 300);
+      }, 3200);
+    }
+
+    function escapeHTML(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    // Cross-tab instant synchronization (Office PC Admin tab updates TV tab automatically!)
+    window.addEventListener('storage', (e) => {
+      if (e.key === STORAGE_KEYS.JOBS) {
+        store.jobs = store.loadJobs();
+        renderDashboard();
+        renderAdminJobsList();
+      }
+      if (e.key === STORAGE_KEYS.MASCOT) {
+        applyStoredMascotImage();
+      }
+    });
+
+    /* ========================================================================
+       10. INITIALIZATION ON WINDOW LOAD
+       ======================================================================== */
+    window.addEventListener('DOMContentLoaded', () => {
+      // Load saved sync URL if present
+      const savedSync = localStorage.getItem(STORAGE_KEYS.SYNC_URL);
+      if (savedSync) {
+        document.getElementById('settings-sync-url').value = savedSync;
+        document.getElementById('sync-status-label').textContent = 'External webhook URL active.';
+      }
+
+      // Initialize form defaults, mascot image, clock, weather, and board
+      resetJobForm();
+      applyStoredMascotImage();
+      updateClockAndDate();
+      fetchLiveWeather();
+      setBoardDay('today');
+
+      // 1-second ticker for live clock, countdown, and automatic midnight date rollover
+      setInterval(() => {
+        updateClockAndDate();
+        updateLiveCountdown();
+      }, 1000);
+
+      // Rotate Chilbert's speech bubble every 9 seconds
+      setInterval(() => {
+        if (currentMascotState !== 'celebrating' && currentMascotState !== 'sleeping') {
+          nextChilbertQuote();
+        }
+      }, 9000);
+
+      // Auto-advance pages in TV Mode every 18 seconds if > 4 jobs exist
+      setInterval(() => {
+        const todayISO = getLocalDateISO(0);
+        const tomorrowISO = getLocalDateISO(1);
+        const activeJobs = store.jobs.filter(j => j.date === (currentBoardDay === 'today' ? todayISO : tomorrowISO));
+        const totalPages = Math.ceil(activeJobs.length / JOBS_PER_PAGE);
+        if (totalPages > 1) {
+          currentJobPage = (currentJobPage + 1) % totalPages;
+          renderDashboard(true);
+        } else {
+          renderDashboard(false);
+        }
+      }, 18000);
+
+      // Refresh weather every 15 minutes
+      setInterval(() => {
+        fetchLiveWeather();
+      }, 900000);
+    });
+  </script>
+</body>
+</html>
